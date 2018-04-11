@@ -1,0 +1,49 @@
+version: '3.4'
+
+volumes:
+  jenkins-data:
+
+networks:
+  default:
+  localdev:
+    external:
+      name: localdev_default
+  nexus:
+    external:
+      name: nexus3_default
+  nginx:
+    external:
+      name: nginx
+
+x-logging: &_logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  jenkins:
+    build:
+      args:
+        - http_proxy
+      context: .
+      dockerfile: Dockerfile
+      network: localdev_default
+    environment:
+      VIRTUAL_HOST: jenkins.${LOCALDEV_VHOST_SUFFIX}
+      VIRTUAL_PORT: 8080
+      JENKINS_PLUGINS: cloudbees-folder antisamy-markup-formatter build-timeout credentials-binding timestamper ws-cleanup ant gradle workflow-aggregator github-branch-source pipeline-github-lib pipeline-stage-view git subversion ssh-slaves matrix-auth pam-auth ldap email-ext mailer docker-slaves
+      #JAVA_OPTS: -Dhttp.proxyHost=http-proxy -Dhttp.proxyPort=3128 -Dhttps.proxyHost=http-proxy -Dhttps.proxyPort=3128
+      JAVA_OPTS: -Djenkins.install.runSetupWizard=false -Dhttp.proxyHost=http-proxy -Dhttp.proxyPort=3128
+    logging:
+      <<: *_logging
+    networks:
+      default:
+      localdev:
+      nexus:
+      nginx:
+    restart: always
+    volumes:
+      - jenkins-data:/var/jenkins_home:rw
+      - .:/srv/localdev/jenkins:ro
+      - /var/run/docker.sock:/var/run/docker.sock
