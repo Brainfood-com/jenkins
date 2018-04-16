@@ -35,6 +35,11 @@ services:
       JENKINS_PLUGINS: cloudbees-folder antisamy-markup-formatter build-timeout credentials-binding timestamper ws-cleanup ant gradle workflow-aggregator github-branch-source pipeline-github-lib pipeline-stage-view git subversion ssh-slaves matrix-auth pam-auth ldap email-ext mailer docker-slaves
       #JAVA_OPTS: -Dhttp.proxyHost=http-proxy -Dhttp.proxyPort=3128 -Dhttps.proxyHost=http-proxy -Dhttps.proxyPort=3128
       JAVA_OPTS: -Djenkins.install.runSetupWizard=false -Dhttp.proxyHost=http-proxy -Dhttp.proxyPort=3128
+    labels:
+      - com.brainfood.docker.localdev.sub
+      - com.brainfood.docker.localdev.sub.target_user=jenkins
+      - com.brainfood.docker.localdev.sub.target_pwd=/
+      - com.brainfood.docker.localdev.sub.tool.jenkins=jenkins-cli
     logging:
       <<: *_logging
     networks:
