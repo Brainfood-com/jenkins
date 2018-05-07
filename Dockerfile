@@ -18,6 +18,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 	&& adduser jenkins docker \
 	&& true
 
+ENV JENKINS_URL http://localhost:8080
 COPY jenkins-cli /usr/local/bin/jenkins-cli
 USER jenkins
 COPY auto-configure.groovy /usr/share/jenkins/ref/init.groovy.d/auto-configure.groovy
